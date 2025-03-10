@@ -15,11 +15,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
         .calculator{
             background: #3a4452;
             padding: 20px;
             border-radius: 10px;
+            position: relative;
         }
         .calculator form input{
             border: 0;
@@ -65,20 +67,33 @@
         form input.operator{
             color: #33ffd8;
         }
+        .name {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #000;
+            font-size: 18px;
+        }
     </Style>
 </head>
 
 <body>
 <div class="background">
+    <div class="name">
+        Oracle Tio Panjaitan
+        <br>
+        245150400111069
+    </div>
     <div class="calculator"> 
+        <div class="name">Casio</div>
         <form>
             <div class="display">
-                <input type="text" name="display" id="display">
+                <input type="text" name="display" id="display" readonly>
             </div>
             <div>
                 <input type="button" value="AC" onclick="display.value = '' " class="operator">
                 <input type="button" value="DE" onclick="display.value = display.value.toString().slice(0, -1)" class="operator">
-                <input type="button" value="." onclick="display.value += '.' " class="operator">
+                <input type="button" value="." onclick="addDecimal()" class="operator">
                 <input type="button" value="/" onclick="addOperator('/')" class="operator">
             </div>
             <div>
@@ -102,7 +117,7 @@
             <div>
                 <input type="button" value="00" onclick="display.value += '00' ">
                 <input type="button" value="0" onclick="display.value += '0' ">
-                <input type="button" value="=" onclick="display.value = eval(display.value.replace(/÷/g, '/'))" class="equal operator">
+                <input type="button" value="=" onclick="evaluateExpression()" class="equal operator">
             </div>
         </form>        
     </div>
@@ -118,6 +133,31 @@
             display.value += operator;
         }
     }
+
+    function addDecimal() {
+        const display = document.getElementById('display');
+        const lastNumber = display.value.split(/[\+\-\*\/]/).pop();
+        if (!lastNumber.includes('.')) {
+            display.value += '.';
+        }
+    }
+
+    function evaluateExpression() {
+    const display = document.getElementById('display');
+    const value = display.value;
+
+    // Check for consecutive operators
+    if (/[\+\-\*\/]{2,}/.test(value)) {
+        display.value = 'Error';
+        return;
+    }
+
+    try {
+        display.value = eval(value.replace(/÷/g, '/'));
+    } catch (error) {
+        display.value = 'Error';
+    }
+}
 </script>
 </body>
 
